@@ -1,40 +1,36 @@
 # Ionic Rules
 
-Ce document définit les règles spécifiques à Ionic dans le projet.
+This document defines the Ionic-specific rules for the project.
 
-Il complète les règles Angular, architecture, design et CSS.
+It complements the architecture, design, and style rules.
 
-Le projet utilise :
+The project uses:
 
 - Ionic Angular
 - Angular 20+
 - Standalone components
-- Capacitor pour les fonctionnalités natives
-- Tailwind CSS en priorité
-- SCSS par composant quand nécessaire
+- Capacitor for native features
+- Tailwind CSS as the primary styling approach
+- Per-component SCSS when necessary
 
----
+## Objective
 
-## Objectif
+Use Ionic for what it does well:
 
-Utiliser Ionic pour ce qu’il fait bien :
+- mobile structure;
+- mobile navigation;
+- mobile scroll;
+- modals and overlays;
+- accessibility;
+- safe areas;
+- touch components;
+- Capacitor integration.
 
-- structure mobile ;
-- navigation mobile ;
-- scroll mobile ;
-- modales et overlays ;
-- accessibilité ;
-- safe areas ;
-- composants tactiles ;
-- intégration Capacitor.
+Do not use Ionic as a simple desktop web component library.
 
-Ne pas utiliser Ionic comme une simple librairie de composants web desktop.
+## Page Structure
 
----
-
-## Structure de page
-
-Une page Ionic doit utiliser la structure Ionic standard.
+A routed Ionic page must use the standard Ionic structure.
 
 ```html
 <ion-page>
@@ -52,87 +48,45 @@ Une page Ionic doit utiliser la structure Ionic standard.
 </ion-page>
 ```
 
-Utiliser :
+Use `ion-page`, `ion-header`, `ion-toolbar`, `ion-content`, and `ion-footer` for fixed bottom actions.
 
-ion-page pour chaque page routée ;
-ion-header pour l’en-tête de page ;
-ion-toolbar pour la barre supérieure ;
-ion-content pour le scroll principal ;
-ion-footer pour les actions fixes en bas d’écran.
+Avoid:
 
-Éviter :
+- a page without `ion-page`;
+- manual scroll with `overflow-auto` on the full page;
+- unnecessary nested scrollable areas;
+- desktop-first layouts;
+- custom headers when `ion-header` is sufficient.
 
-- une page sans ion-page ;
-- un scroll manuel avec overflow-auto sur toute la page ;
-- plusieurs zones scrollables inutiles ;
-- des layouts desktop-first ;
-- des headers custom si ion-header suffit.
+## Ionic Components
 
-## Composants Ionic à privilégier
+Use Ionic components when they bring useful mobile behavior. If a plain HTML element is clearer and lighter, use it instead.
 
-Utiliser les composants Ionic quand ils apportent un comportement mobile utile.
+Key components to use when appropriate: `ion-modal`, `ion-popover`, `ion-alert`, `ion-toast`, `ion-loading`, `ion-list`, `ion-item`, `ion-input`, `ion-select`, `ion-fab`, `ion-infinite-scroll`.
 
-Composants recommandés :
-
-ion-page
-ion-header
-ion-toolbar
-ion-title
-ion-content
-ion-footer
-ion-button
-ion-icon
-ion-modal
-ion-popover
-ion-list
-ion-item
-ion-input
-ion-select
-ion-textarea
-ion-toggle
-ion-checkbox
-ion-radio
-ion-alert
-ion-toast
-ion-loading
-
-Ne pas utiliser un composant Ionic juste parce qu’il existe.
-
-Si un simple élément HTML est plus clair et plus léger, l’utiliser.
-
-## Imports Ionic
-
-Importer uniquement les composants Ionic nécessaires dans le composant standalone.
+Import only the Ionic components actually used in each standalone component.
 
 ## Navigation
 
-Utiliser Angular Router avec des routes standalone.
-
-Préférer :
+Use Angular Router with standalone routes.
 
 ```ts
 export const routes: Routes = [
   {
-    path: "home",
+    path: 'home',
     loadComponent: () =>
-      import("./pages/home/home.page").then((m) => m.HomePage),
+      import('./pages/home/home.page').then((m) => m.HomePage),
   },
 ];
 ```
 
-Utiliser ion-router-outlet au niveau adapté :
+Use `ion-router-outlet` once at the app root, or inside a tabs layout if the app uses tabs. Avoid nested `ion-router-outlet` without a real reason.
 
-- une fois à la racine de l’app ;
-- dans un layout tabs si l’app utilise des tabs ;
-- éviter les ion-router-outlet imbriqués sans vraie raison.
-
-Ne pas créer de feature module uniquement pour lazy loader une page.
+Do not create a feature module just to lazy load a page.
 
 ## Tabs
 
-Utiliser ion-tabs uniquement pour une navigation principale par onglets.
-
-Structure recommandée :
+Use `ion-tabs` only for primary tab-based navigation.
 
 ```html
 <ion-tabs>
@@ -152,27 +106,11 @@ Structure recommandée :
 </ion-tabs>
 ```
 
-Les tabs doivent rester simples et accessibles.
+Avoid too many tabs, long labels, tabs for secondary navigation, or primary actions in the tab bar.
 
-Éviter :
+## Actions
 
-trop d’onglets ;
-des labels trop longs ;
-des tabs pour une navigation secondaire ;
-des actions principales dans la tab bar.
-Actions
-
-Utiliser ion-button pour les actions principales.
-
-Les boutons doivent :
-
-avoir une zone tactile confortable ;
-avoir un état disabled clair ;
-avoir un focus visible ;
-avoir un texte court ;
-avoir un aria-label s’ils sont icon-only.
-
-Exemple :
+Use `ion-button` for primary actions.
 
 ```html
 <ion-button
@@ -185,60 +123,34 @@ Exemple :
 </ion-button>
 ```
 
-Pour les actions flottantes, utiliser ion-fab seulement si l’action est réellement globale ou principale.
+Buttons must have a comfortable touch target, a clear disabled state, visible focus, short text, and an `aria-label` if icon-only.
 
-Éviter :
+Use `ion-fab` only if the action is truly global or primary. Avoid hover as the only feedback.
 
-trop de boutons flottants ;
-des boutons minuscules ;
-des actions importantes uniquement sous forme d’icône ;
-des effets hover comme seul feedback.
-Lists
+## Lists
 
-Utiliser ion-list et ion-item pour les listes interactives simples.
-
-Exemple :
+Use `ion-list` and `ion-item` for simple interactive lists.
 
 ```html
 <ion-list>
   @for (item of items(); track item.id) {
-  <ion-item button (click)="selectItem(item.id)">
-    <ion-label>
-      <h2>{{ item.title }}</h2>
-      <p>{{ item.description }}</p>
-    </ion-label>
-  </ion-item>
+    <ion-item button (click)="selectItem(item.id)">
+      <ion-label>
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.description }}</p>
+      </ion-label>
+    </ion-item>
   }
 </ion-list>
 ```
 
-Pour une liste très custom visuellement, un layout HTML + Tailwind peut être préférable.
+For heavily custom visual lists, plain HTML with Tailwind may be preferable.
 
-Pour les longues listes, éviter de tout rendre d’un coup.
-
-Utiliser plutôt :
-
-- pagination ;
-- infinite scroll ;
-- chargement progressif ;
-- Angular CDK virtual scroll si nécessaire.
-
-Ne pas utiliser ion-virtual-scroll.
+For long lists, use pagination, infinite scroll, progressive loading, or Angular CDK virtual scroll. Do not use `ion-virtual-scroll`.
 
 ## Forms
 
-Utiliser les Reactive Forms typés avec les composants Ionic.
-
-Composants recommandés :
-
-ion-input
-ion-textarea
-ion-select
-ion-checkbox
-ion-toggle
-ion-radio-group
-
-Exemple :
+Use typed Reactive Forms with Ionic components.
 
 ```html
 <form [formGroup]="form" (ngSubmit)="submit()">
@@ -254,66 +166,36 @@ Exemple :
 </form>
 ```
 
-Les erreurs doivent être visibles et compréhensibles.
+Errors must be visible and understandable. Do not indicate an error by color alone.
 
-Ne pas afficher une erreur uniquement par couleur.
+## Modals and Overlays
 
-## Modals et overlays
+Each complex modal must be a separate component:
 
-Utiliser les overlays Ionic pour :
-
-- modales ;
-- popovers ;
-- alerts ;
-- toasts ;
-- loading states ;
-- action sheets.
-
-Chaque modale complexe doit être un composant séparé.
-
-Exemple :
+```
 components/edit-item-modal/
-edit-item-modal.component.ts
-edit-item-modal.component.html
-edit-item-modal.component.scss
+  edit-item-modal.component.ts
+  edit-item-modal.component.html
+  edit-item-modal.component.scss
+```
 
-La page contrôle l’ouverture de la modale.
+The page controls the modal opening. The modal controls its internal content. Actions bubble up via `output()`.
 
-La modale contrôle son contenu interne.
+Use `ion-toast` for short feedback, `ion-alert` for important confirmations, `ion-loading` for blocking operations, and inline states for non-blocking loading.
 
-Les actions remontent avec output().
+Avoid:
 
-Éviter :
+- large modals coded directly in the page;
+- multiple stacked overlays;
+- a modal that fills the screen without reason;
+- a full-screen loading for a small local action;
+- a toast for a critical error that requires user action.
 
-- une grosse modale codée directement dans la page ;
-- plusieurs overlays empilés ;
-- une modale qui prend tout l’écran sans raison ;
-- un absolute inset-0 si Ionic gère déjà l’overlay.
+## Theming
 
-## Toasts, alerts et loading
+Use Ionic CSS variables to customize Ionic components.
 
-Utiliser :
-
-ion-toast pour un feedback court ;
-ion-alert pour une confirmation importante ;
-ion-loading pour une opération bloquante ;
-un état inline pour les chargements non bloquants.
-
-Ne pas afficher un loading plein écran pour une petite action locale.
-
-Ne pas utiliser un toast pour une erreur critique qui demande une action utilisateur.
-
-## Theming Ionic
-
-Utiliser les variables Ionic quand il faut modifier un composant Ionic.
-
-Exemple :
-
-```css
-:host {
-  --page-padding: 1rem;
-}
-
+```scss
 ion-content {
   --background: var(--color-layer-bg);
 }
@@ -328,138 +210,45 @@ ion-button {
 }
 ```
 
-Utiliser Tailwind pour le layout et les styles simples.
+Use Tailwind for layout and simple styles. Use SCSS for Ionic variables, shadow DOM parts, animations, and complex shadows. See `style.md` for full styling rules.
 
-Utiliser SCSS pour :
+## Safe Areas
 
-- variables Ionic ;
-- shadow DOM parts ;
-- animations ;
-- shadows complexes ;
-- styles natifs difficiles à faire avec Tailwind.
+Fixed areas must respect mobile safe areas.
 
-Ne pas utiliser de style inline.
+Watch for: footer, tab bar, fixed buttons, HUDs, custom overlays, bottom actions.
 
-## Tailwind avec Ionic
-
-Tailwind est prioritaire pour :
-
-- spacing ;
-- layout ;
-- flex/grid ;
-- typo ;
-- couleurs du projet ;
-- bordures simples ;
-- responsive.
-
-Exemple :
-
-```html
-<ion-content>
-  <main class="min-h-full space-y-4 p-4">
-    <section class="rounded-2xl border border-layer-border bg-layer-panel p-4">
-      <h1 class="font-title text-xl text-text-primary">Title</h1>
-
-      <p class="mt-2 text-sm text-text-secondary">Description</p>
-    </section>
-  </main>
-</ion-content>
-```
-
-Éviter :
-
-- de tout styliser en SCSS ;
-- les classes Tailwind arbitraires si un token existe ;
-- les styles inline ;
-- les wrappers inutiles autour des composants Ionic.
-
-## Safe areas
-
-Les zones fixes doivent respecter les safe areas mobiles.
-
-À surveiller :
-
-- footer ;
-- tab bar ;
-- boutons fixes ;
-- HUD ;
-- overlays custom ;
-- actions en bas d’écran.
-
-Exemple :
-
-```css
+```scss
 .fixed-bottom-action {
   padding-bottom: calc(1rem + env(safe-area-inset-bottom));
 }
 ```
 
-Ne pas placer une action importante trop proche du bord bas.
+Do not place important actions too close to the bottom edge.
 
 ## Capacitor
 
-Utiliser Capacitor pour les fonctionnalités natives.
+Use Capacitor for native features: camera, files, notifications, preferences, haptics, status bar, splash screen, app state.
 
-Exemples :
+Prefer official Capacitor plugins. Avoid Cordova and Ionic Native unless there is a legacy constraint.
 
-- caméra ;
-- fichiers ;
-- notifications ;
-- préférences ;
-- haptics ;
-- status bar ;
-- splash screen ;
-- app state.
+Create one Angular service per native feature:
 
-Préférer les plugins Capacitor officiels quand ils existent.
-
-Éviter Cordova et Ionic Native sauf contrainte legacy.
-
-Créer un service Angular par fonctionnalité native.
-
-Exemple :
-
+```
 core/services/camera.service.ts
 core/services/notification.service.ts
 core/services/device.service.ts
+```
 
-Le service doit gérer :
+Each service must handle: platform availability, web fallback when possible, native errors, permissions, and strict typing.
 
-- disponibilité de la plateforme ;
-- fallback web si possible ;
-- erreurs natives ;
-- permissions ;
-- typage strict.
-- Platform differences
+Never assume identical behavior across web, iOS, Android, PWA, and desktop browser. Isolate platform-specific logic in services and always provide a fallback or a clear error when a feature is unavailable.
 
-Ne jamais supposer que le comportement est identique sur :
+## Capacitor Permissions
 
-- web ;
-- iOS ;
-- Android ;
-- PWA ;
-- navigateur desktop.
+Request permissions only when they are actually needed, not at app launch.
 
-Quand une fonctionnalité dépend de la plateforme :
-
-- isoler la logique dans un service ;
-- fournir un fallback ;
-- afficher une erreur claire si non disponible ;
-- tester sur un vrai appareil quand possible.
-
-## Capacitor Security
-
-Les permissions natives doivent être limitées au strict nécessaire.
-
-À faire :
-
-- demander une permission seulement au moment où elle est utile ;
-- expliquer pourquoi la permission est demandée ;
-- gérer le refus ;
-- prévoir un fallback si possible.
-
-À éviter :
-
-- demander toutes les permissions au lancement ;
-- garder une permission inutile ;
-- supposer que la permission est toujours accordée.
+- Explain to the user why the permission is needed.
+- Handle denial gracefully.
+- Provide a fallback when possible.
+- Never keep an unused permission.

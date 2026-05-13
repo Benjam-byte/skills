@@ -1,8 +1,8 @@
 # Ionic Angular Architecture Rules
 
-Ce document définit les règles de structure et d’architecture du projet.
+This document defines the structure and architecture rules for the project.
 
-Le projet utilise :
+The project uses:
 
 - Angular 20+
 - Ionic Angular
@@ -10,31 +10,29 @@ Le projet utilise :
 - Standalone components
 - Signals
 - Tailwind CSS
-- SCSS par composant
+- Per-component SCSS
 
-Le but est de garder le code simple, maintenable, mobile-first et facile à faire évoluer.
+The goal is to keep the code simple, maintainable, mobile-first, and easy to evolve.
 
-## Principes généraux
+## General Principles
 
-- Utiliser Angular moderne : `signal()`, `computed()`, `input()`, `output()`, `inject()`.
-- Utiliser des standalone components uniquement.
-- Ne pas créer de `NgModule`.
-- Utiliser `ChangeDetectionStrategy.OnPush` sur tous les composants.
-- Garder les composants petits et ciblés.
-- Éviter les pages trop grosses.
-- Mettre la logique métier dans des services ou fichiers utilitaires.
-- Mettre la logique purement UI dans les composants.
-- Éviter les abstractions inutiles.
-- Préférer du code simple et lisible au code trop clever.
+- Use modern Angular: `signal()`, `computed()`, `input()`, `output()`, `inject()`.
+- Use standalone components only.
+- Do not create `NgModule`.
+- Use `ChangeDetectionStrategy.OnPush` on all components.
+- Keep components small and focused.
+- Avoid pages that grow too large.
+- Put business logic in services or utility files.
+- Put purely UI logic in components.
+- Avoid unnecessary abstractions.
+- Prefer simple, readable code over clever code.
 
-## Structure des dossiers
+## Folder Structure
 
-## Structure des dossiers
+Use a clear structure with `core` and `pages`.
 
-Utiliser une structure claire avec `core` et `pages`.
-
-- `core` contient le code global / partagé de l’application.
-- `pages` contient les écrans de l’application et leurs composants spécifiques.
+- `core` contains global and shared application code.
+- `pages` contains the application screens and their specific components.
 
 ```txt
 src/app/
@@ -43,6 +41,8 @@ src/app/
     guards/
     models/
     utils/
+    directives/
+    pipes/
     components/
       app-button/
         app-button.component.ts
@@ -53,11 +53,6 @@ src/app/
         empty-state.component.ts
         empty-state.component.html
         empty-state.component.scss
-
-    directives/
-    pipes/
-    models/
-    utils/
 
   pages/
     home/
@@ -103,169 +98,155 @@ src/app/
           detail-modal.component.scss
 ```
 
+Files are named by role: `.page.ts` for routed pages, `.component.ts` for components, `.service.ts` for services.
+
 ## Pages
 
-Une page doit principalement :
+A page must primarily:
 
-- composer les composants enfants
-- gérer l’orchestration globale
-- connecter les services nécessaires
-- gérer les états de page simples : loading, error, empty, content.
+- compose child components;
+- handle global orchestration;
+- connect the necessary services;
+- manage simple page states: loading, error, empty, content.
 
-Une page ne doit pas :
+A page must not:
 
-- contenir trop de logique métier
-- contenir plusieurs grosses sections visuelles directement dans son template
-- contenir des modales complexes directement
-- contenir des calculs métier répétables.
+- contain too much business logic;
+- contain multiple large visual sections directly in its template;
+- contain complex modals inline;
+- contain repeatable business calculations.
 
-Si une page devient trop longue, extraire des composants.
+If a page grows too long, extract components.
 
-## Composants
+## Components
 
-Créer un composant séparé pour :
+Create a separate component for:
 
-- une carte
-- un item de liste
-- une section complexe
-- une modale
-- un formulaire
-- un bloc répété
-- un SVG
-- un header de feature
-- une barre d’action
-- un panneau de statistiques
+- a card;
+- a list item;
+- a complex section;
+- a modal;
+- a form;
+- a repeated block;
+- an SVG;
+- a feature header;
+- an action bar;
+- a stats panel.
 
-Chaque composant doit avoir une seule responsabilité.
+Each component must have a single responsibility.
 
-Si un composant dépasse environ 150 lignes ou contient plusieurs responsabilités visuelles, il faut le découper.
+If a component exceeds approximately 150 lines or contains multiple visual responsibilities, split it.
 
-## Syntaxe Angular
+## Angular Syntax
 
-Toujours utiliser :
+Always use:
 
+```ts
 input()
 output()
 signal()
 computed()
 inject()
+```
 
-Éviter :
+Avoid:
 
+```ts
 @Input()
 @Output()
 constructor injection
+```
 
-Exemple :
+Example:
 
+```ts
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 @Component({
-selector: 'app-resource-card',
-templateUrl: './resource-card.component.html',
-styleUrl: './resource-card.component.scss',
-changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-resource-card',
+  templateUrl: './resource-card.component.html',
+  styleUrl: './resource-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResourceCardComponent {
-readonly name = input.required<string>();
-readonly value = input.required<number>();
-readonly selected = input(false);
+  readonly name = input.required<string>();
+  readonly value = input.required<number>();
+  readonly selected = input(false);
 
-readonly selectResource = output<void>();
+  readonly selectResource = output<void>();
 
-protected readonly formattedValue = computed(() => {
-return this.value().toLocaleString('fr-FR');
-});
+  protected readonly formattedValue = computed(() => {
+    return this.value().toLocaleString('fr-FR');
+  });
 
-protected onSelect(): void {
-this.selectResource.emit();
+  protected onSelect(): void {
+    this.selectResource.emit();
+  }
 }
-}
+```
 
-## Templates Angular
+## Angular Templates
 
-Utiliser le nouveau control flow Angular :
+Use the new Angular control flow:
 
+```html
 @if (isLoading()) {
-<app-loader />
+  <app-loader />
 } @else if (hasError()) {
-<app-error-state />
+  <app-error-state />
 } @else {
-<app-content />
+  <app-content />
 }
+```
 
-Utiliser :
-
-@for (item of items(); track item.id) {
-<app-item-card [item]="item" />
+```html
+@for (item of itemList(); track item.id) {
+  <app-item-card [item]="item" />
 }
+```
 
-Éviter :
+Avoid `*ngIf`, `*ngFor`, `*ngSwitch`.
 
-*ngIf
-*ngFor
-\*ngSwitch
+Keep templates simple. Do not put complex logic in HTML.
 
-Garder les templates simples.
+## State Management
 
-Ne pas mettre de logique complexe dans le HTML.
+Use signals for:
 
-State management
+- local component state;
+- simple UI state;
+- selection;
+- modal open/close;
+- derived values with `computed()`.
 
-Utiliser les signals pour :
+Use RxJS for:
 
-- état local de composant
-- état UI simple
-- sélection
-- ouverture/fermeture de modale
-- valeur dérivée avec computed().
+- API calls;
+- shared async streams;
+- external events;
+- websockets;
+- complex streams.
 
-Utiliser RxJS pour :
+Do not use RxJS for a simple local boolean.
 
-- appels API
-- flux asynchrones partagés
-- événements externes
-- websocket
-- streams complexes.
+Update signals with `set()` or `update()`:
 
-Ne pas utiliser RxJS pour un simple booléen local.
-
-Ne pas modifier un signal avec mutate.
-
-Utiliser :
-
+```ts
 this.items.update(items => [...items, newItem]);
 this.selectedId.set(id);
-Services
+```
 
-es services doivent avoir une responsabilité claire.
+## Services
 
-Exemples :
+Services must have a clear, domain-based responsibility. Name them accordingly: `user.service.ts`, `auth.service.ts`, `camera.service.ts`. A service must not become a god service.
 
-user.service.ts
-auth.service.ts
-storage.service.ts
-api.service.ts
-notification.service.ts
-settings.service.ts
-data-sync.service.ts
-image-loader.service.ts
-cache.service.ts
-navigation.service.ts
+Prefer:
 
-Un service ne doit pas devenir un “god service”.
-
-Préférer :
-
+```ts
 @Injectable({ providedIn: 'root' })
 export class ImportService {
-private readonly api = inject(ApiService);
+  private readonly api = inject(ApiService);
 }
-
-Éviter :
-
-constructor(private api: ApiService) {}
-
 ```
 
-```
+Avoid constructor injection.

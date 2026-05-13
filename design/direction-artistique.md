@@ -1,49 +1,60 @@
-## Direction artistique du projet
+# Artistic Direction
 
-À compléter pour chaque projet.
+To be completed for each project.
 
-Décrire ici l’identité visuelle recherchée :
+Describe the visual identity being sought:
 
-- ambiance générale ;
-- type d’univers ;
-- formes ;
-- matières ;
-- couleurs dominantes ;
-- niveau de détails ;
-- style d’illustration ;
-- types d’icônes ;
-- éléments à éviter.
+- general atmosphere;
+- type of universe;
+- shapes;
+- materials and textures;
+- dominant colors;
+- level of detail;
+- illustration style;
+- icon style;
+- elements to avoid.
 
-Exemple :
+Example:
 
 ```md
-Le rendu recherché :
-
-- chaleureux ;
-- ludique ;
-- minimaliste ;
-- contrasté ;
+The desired look and feel:
+- warm;
+- playful;
+- minimalist;
+- high contrast;
 - mobile-first.
 
-À éviter :
-
-- interface trop chargée ;
-- effets décoratifs inutiles ;
-- composants qui ressemblent à un dashboard desktop ;
-- textes difficiles à lire sur mobile.
+To avoid:
+- overloaded interface;
+- unnecessary decorative effects;
+- components that look like a desktop dashboard;
+- text that is hard to read on mobile.
 ```
 
-## Checklist direction artistique
+## Moodboard
 
-Avant de valider une interface, vérifier que le rendu correspond à la direction artistique du projet.
+Add references that capture the visual identity of the project.
 
-À compléter selon le projet :
+- Apps, websites, or products whose atmosphere is close to the project;
+- specific elements to draw inspiration from (navigation, cards, colors, typography);
+- elements that must absolutely not be reproduced.
 
-- ambiance respectée ;
-- palette respectée ;
-- niveau de détail cohérent ;
-- typographie cohérente ;
-- icônes cohérentes ;
-- composants cohérents entre eux ;
-- effets visuels cohérents ;
-- écrans principaux harmonisés.
+This can be links, screenshots, Figma frames, or a short description.
+
+A good moodboard answers the question: "What should this feel like?"
+
+## Artistic Direction Checklist
+
+Before validating an interface, verify that the result matches the project's artistic direction.
+
+To be completed per project:
+
+- atmosphere respected;
+- palette respected;
+- level of detail consistent;
+- typography consistent;
+- icons consistent;
+- components consistent with each other;
+- visual effects consistent;
+- main screens harmonized;
+- moodboard references honored.

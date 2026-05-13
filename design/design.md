@@ -1,386 +1,414 @@
 # Design Rules
 
-Ce document définit les règles de design de l’application.
+This document defines the design rules for the application.
 
-L’objectif est de garder une interface cohérente, lisible, mobile-first et simple à maintenir dans un projet.
+The goal is to maintain a consistent, readable, mobile-first interface that is simple to maintain across the project.
 
-Ce fichier sert de base commune.  
-Les choix spécifiques à la direction artistique du projet se trouve dans le fichier **direction-artistique.md**.
+This file serves as a common baseline.  
+Project-specific artistic direction choices are defined in **artistic-direction.md**.
 
-## Principe principal
+## Core Principle
 
-L’interface doit être claire, utile et immédiatement compréhensible.
+The interface must be clear, useful, and immediately understandable.
 
-Chaque élément visuel doit aider à :
+Every visual element must help the user to:
 
-- comprendre l’écran ;
-- identifier l’action principale ;
-- lire les informations importantes ;
-- interagir facilement sur mobile.
+- understand the screen;
+- identify the primary action;
+- read the important information;
+- interact easily on mobile.
 
-Ne pas ajouter de décoration si elle n’améliore pas l’expérience utilisateur.
+Do not add decoration if it does not improve the user experience.
 
-## Hiérarchie visuelle
+## Visual Hierarchy
 
-L’écran doit avoir une hiérarchie claire.
+The screen must have a clear hierarchy.
 
-Ordre de priorité :
+Priority order:
 
-- Action principale
-- Information importante
+- Primary action
+- Important information
 - Navigation
-- Informations secondaires
-- Décoration
+- Secondary information
+- Decoration
 
-La décoration ne doit jamais gêner la lecture ou l’interaction.
+Decoration must never interfere with reading or interaction.
 
-Une page doit pouvoir être comprise rapidement, même sur petit écran.
+A page must be understandable quickly, even on a small screen.
 
-## Mobile first
+## Mobile First
 
-L’interface est pensée d’abord pour mobile.
+The interface is designed for mobile first.
 
-Règles :
+Rules:
 
-- les éléments interactifs doivent être grands et faciles à toucher ;
-- les boutons importants doivent être accessibles au pouce ;
-- les textes doivent rester lisibles sur petit écran ;
-- le contenu doit scroller naturellement ;
-- les zones fixes doivent respecter les safe areas ;
-- les modales doivent rentrer dans un layout Ionic sans hack visuel ;
-- les breakpoints doivent améliorer l’expérience tablette/desktop, pas réparer un layout mobile cassé.
+- interactive elements must be large and easy to tap;
+- important buttons must be reachable by the thumb;
+- text must remain readable on small screens;
+- content must scroll naturally;
+- fixed areas must respect safe areas;
+- modals must fit into an Ionic layout without visual hacks;
+- breakpoints must improve the tablet/desktop experience, not fix a broken mobile layout.
 
-Éviter :
+Avoid:
 
-- les layouts desktop compressés sur mobile ;
-- les zones tactiles trop petites ;
-- les textes trop longs dans les boutons ;
-- les scrolls imbriqués inutiles ;
-- les superpositions excessives.
+- desktop layouts compressed on mobile;
+- touch targets that are too small;
+- text that is too long in buttons;
+- unnecessary nested scrolls;
+- excessive overlapping elements.
+
+## Spacing
+
+Use a base spacing system of 4px or 8px. Do not invent arbitrary values.
+
+Rules:
+
+- keep consistent spacing between elements;
+- maintain sufficient internal margins;
+- do not press text against edges;
+- use spacing to reinforce visual hierarchy, not just to fill space.
+
+Spacing must be defined in the project theme, not scattered across components.
 
 ## Layout
 
-Les écrans doivent être construits avec une structure claire.
+Screens must be built with a clear structure.
 
-Structure recommandée :
+Recommended structure:
 
-- header ou zone de contexte ;
-- contenu principal ;
-- actions principales ;
-- navigation ou footer si nécessaire.
+- header or context area;
+- main content;
+- primary actions;
+- navigation or footer if necessary.
 
-Règles :
+Rules:
 
-- garder des espacements réguliers ;
-- garder des marges internes suffisantes ;
-- ne pas coller le texte aux bordures ;
-- éviter les empilements de cadres dans des cadres ;
-- ne pas abuser de absolute si un layout flex/grid suffit.
+- keep consistent spacing;
+- maintain sufficient internal margins;
+- do not press text against edges;
+- avoid stacking frames within frames;
+- do not overuse `absolute` positioning when flex/grid is sufficient.
 
-Un élément ne doit pas être dans trop de couches visuelles inutiles.
+An element must not be buried in too many unnecessary visual layers.
 
-## Couleurs
+## Colors
 
-Toujours utiliser les tokens Tailwind/CSS/Figma du projet quand ils existent.
+Always use the project's Tailwind/CSS/Figma tokens when they exist.
 
-Règles :
+Rules:
 
-- ne pas ajouter une couleur si un token existe ;
-- ne pas multiplier les couleurs pour un même type d’élément ;
-- garder un contraste fort entre texte et fond ;
-- utiliser les couleurs vives uniquement pour les états ou les actions importantes ;
-- garder une palette cohérente sur toute l’application.
+- do not add a color if a token already exists;
+- do not multiply colors for the same type of element;
+- maintain strong contrast between text and background;
+- use vivid colors only for states or important actions;
+- keep a consistent palette throughout the application.
 
-Les couleurs doivent être définies dans le thème du projet, pas dispersées dans les composants.
+Colors must be defined in the project theme, not scattered across components.
 
-## Typographie
+## Typography
 
-Utiliser les polices définies par le projet.
+Use the fonts defined by the project.
 
-Règles :
+Rules:
 
-- les titres doivent être courts ;
-- les labels de boutons doivent être lisibles rapidement ;
-- les textes longs doivent rester confortables à lire ;
-- les stats ou valeurs doivent être faciles à comparer ;
-- ne pas utiliser trop de tailles différentes sur un même composant ;
-- Se contenter de h1,h2,h3,h4,h5,h6,p,sub pas plus de niveau
-- ne pas mettre une information importante uniquement dans une image.
+- titles must be short;
+- button labels must be readable at a glance;
+- long texts must remain comfortable to read;
+- stats or values must be easy to compare;
+- do not use too many different sizes within the same component;
+- stick to h1, h2, h3, h4, h5, h6, p, sub — no deeper levels;
+- do not place important information only inside an image.
 
-La typographie doit aider la hiérarchie, pas décorer inutilement.
+Typography must support hierarchy, not decorate unnecessarily.
 
-## Panneaux et surfaces
+## Panels and Surfaces
 
-Les panneaux servent à regrouper une information ou une action.
+Panels are used to group information or an action.
 
-Règles :
+Rules:
 
-- un panneau doit avoir une responsabilité claire ;
-- un panneau important peut avoir une bordure ou un relief visible ;
-- un panneau secondaire doit rester plus discret ;
-- les ombres doivent séparer les éléments, pas surcharger l’écran ;
-- éviter les panneaux imbriqués inutilement.
+- a panel must have a clear responsibility;
+- an important panel may have a visible border or relief;
+- a secondary panel must remain more discreet;
+- shadows must separate elements, not overload the screen;
+- avoid unnecessarily nested panels.
 
-Une surface doit toujours rendre le contenu plus lisible.
+A surface must always make content more readable.
 
-## Boutons
+## Buttons
 
-Les boutons doivent être visibles, lisibles et faciles à toucher.
+Buttons must be visible, readable, and easy to tap.
 
-États à prévoir :
+States to handle:
 
-- normal ;
-- pressé ;
-- actif ;
-- désactivé ;
-- focus clavier ;
-- chargement si nécessaire.
+- normal;
+- pressed;
+- active;
+- disabled;
+- keyboard focus;
+- loading if necessary.
 
-Règles :
+Rules:
 
-- un bouton principal doit être immédiatement identifiable ;
-- un bouton secondaire doit être moins visible que le bouton principal ;
-- un bouton désactivé doit perdre en contraste et ne pas sembler cliquable ;
-- un bouton icon-only doit avoir un aria-label ;
-- ne pas utiliser le hover comme seul feedback ;
-- éviter les labels trop longs.
+- a primary button must be immediately identifiable;
+- a secondary button must be less prominent than the primary button;
+- a disabled button must lose contrast and not appear clickable;
+- an icon-only button must have an `aria-label`;
+- do not use hover as the only feedback;
+- avoid labels that are too long.
 
-Une action importante ne doit pas être difficile à trouver.
+An important action must not be hard to find.
 
-## Icônes
+## Icons
 
-Les icônes doivent être simples et lisibles en petite taille.
+Icons must be simple and readable at small sizes.
 
-Règles :
+Rules:
 
-- utiliser des formes reconnaissables ;
-- garder une taille suffisante ;
-- éviter les détails invisibles sur mobile ;
-- ne pas utiliser une icône seule si le sens n’est pas évident ;
-- ajouter un label accessible si l’icône porte une action ou une information.
+- use recognizable shapes;
+- maintain a sufficient size;
+- avoid details that are invisible on mobile;
+- do not use an icon alone if the meaning is not obvious;
+- add an accessible label if the icon carries an action or information.
 
-## Cartes et fiches
+## Cards
 
-Les cartes servent à présenter une information autonome.
+Cards are used to present self-contained information.
 
-Règles :
+Rules:
 
-- une carte = une idée principale ;
-- le titre doit être visible rapidement ;
-- les informations doivent être regroupées clairement ;
-- les actions doivent être proches de l’information concernée ;
-- l’image ou l’illustration doit aider à comprendre, pas remplir l’espace ;
-- les cartes répétées dans une liste doivent rester légères.
+- one card = one main idea;
+- the title must be visible at a glance;
+- information must be grouped clearly;
+- actions must be close to the relevant information;
+- the image or illustration must help understanding, not fill space;
+- cards repeated in a list must remain lightweight.
 
-Une carte de détail peut être plus riche.
-Une carte répétée 50 fois doit rester simple.
+A detail card can be richer.  
+A card repeated 50 times must stay simple.
 
-## Listes
+## Lists
 
-Les listes doivent rester lisibles et rapides à parcourir.
+Lists must remain readable and quick to scan.
 
-Règles :
+Rules:
 
-- chaque item doit avoir une hiérarchie claire ;
-- les informations principales doivent être visibles sans effort ;
-- les actions secondaires ne doivent pas voler l’attention ;
-- les états sélectionné, actif ou désactivé doivent être évidents ;
-- les items répétés doivent rester visuellement légers.
+- each item must have a clear hierarchy;
+- primary information must be visible without effort;
+- secondary actions must not steal attention;
+- selected, active, or disabled states must be obvious;
+- repeated items must remain visually lightweight.
 
-Éviter :
+Avoid:
 
-- trop de shadows dans une longue liste ;
-- trop d’icônes par item ;
-- des items trop hauts sans raison ;
-- des textes secondaires trop présents.
+- too many shadows in a long list;
+- too many icons per item;
+- items that are too tall for no reason;
+- secondary text that is too prominent.
 
-## Modales
+## Modals
 
-Une modale doit servir une action ou une information précise.
+A modal must serve a specific action or piece of information.
 
-Règles :
+Rules:
 
-- le fond derrière la modale doit rester discret ;
-- le contenu doit être clair et limité ;
-- le bouton de fermeture doit être visible et facile à toucher ;
-- la modale doit s’adapter à son contenu ;
-- le scroll interne doit rester naturel ;
-- les actions principales doivent être en bas ou facilement accessibles.
+- the background behind the modal must remain discreet;
+- the content must be clear and limited;
+- the close button must be visible and easy to tap;
+- the modal must adapt to its content;
+- internal scrolling must feel natural;
+- primary actions must be at the bottom or easily accessible.
 
-Éviter :
+Avoid:
 
-- une modale trop haute pour un contenu court ;
-- plusieurs modales empilées ;
-- une modale qui contient trop de responsabilités ;
-- des layouts custom qui cassent le comportement Ionic.
+- a modal that is too tall for short content;
+- multiple stacked modals;
+- a modal that carries too many responsibilities;
+- custom layouts that break Ionic's default behavior.
 
-## Formulaires
+## Forms
 
-Les formulaires doivent être faciles à remplir sur mobile. Si possible faire des formulaires ou les validations attendus sont spécifiés à l'utilisatuer et passe en vert quand ils sont bon. Limités l'erreurs est indiqué la réussite.
+Forms must be easy to fill out on mobile. Where possible, show validation requirements upfront and highlight them in green when met. Minimize errors and confirm success clearly.
 
-Règles :
+Rules:
 
-- labels visibles ;
-- champs assez grands ;
-- erreurs compréhensibles ;
-- action principale claire ;
-- validation visible sans dépendre uniquement de la couleur ;
-- clavier mobile adapté au type de champ.
+- visible labels;
+- fields large enough to tap;
+- understandable error messages;
+- clear primary action;
+- visible validation that does not rely solely on color;
+- mobile keyboard adapted to the field type.
 
-Éviter :
+Avoid:
 
-- trop de champs sur un seul écran ;
-- placeholders utilisés comme seuls labels ;
-- messages d’erreur techniques ;
-- Erreurs obligatoires ;
-- boutons trop loin du formulaire.
+- too many fields on a single screen;
+- placeholders used as the only labels;
+- technical error messages;
+- mandatory errors without guidance;
+- buttons placed too far from the form.
 
-## Barres de progression
+## Progress Bars
 
-Utiliser l’élément HTML natif <progress> quand c’est adapté.
+Use the native HTML `<progress>` element when appropriate.
 
-Règles :
+Rules:
 
-- toujours afficher un contexte autour de la progression ;
-- ajouter un label visible ou accessible ;
-- garder une hauteur suffisante sur mobile ;
-- utiliser une couleur cohérente avec le type de progression ;
-- ne pas créer une fausse progressbar avec une div si <progress> suffit.
+- always display context around the progress;
+- add a visible or accessible label;
+- maintain a sufficient height on mobile;
+- use a color consistent with the type of progress;
+- do not fake a progress bar with a `div` if `<progress>` suffices.
 
-## États visuels
+## Empty States
 
-Chaque état important doit être visible.
+A screen with no data must remain understandable.
 
-États à prévoir selon le composant :
+Rules:
 
-- normal ;
-- actif ;
-- sélectionné ;
-- désactivé ;
-- verrouillé ;
-- disponible ;
-- chargement ;
-- succès ;
-- erreur ;
-- focus ;
-- pressé.
+- display a clear message explaining why the screen is empty;
+- propose an action if possible;
+- avoid a blank page without context;
+- keep the empty state consistent with the rest of the interface.
 
-Règles :
+An empty state is part of the experience, not an afterthought.
 
-- ne pas dépendre uniquement de la couleur ;
-- utiliser aussi une bordure, une icône, un texte, un changement de relief ou une opacité ;
-- les erreurs doivent avoir un texte explicite ;
-- les états désactivés doivent rester lisibles ;
-- le focus clavier doit être visible.
+## Images and Media
 
-## Feedback utilisateur
+Images must help the user understand, not just fill space.
 
-Chaque action importante doit donner un retour.
+Rules:
 
-Feedback possible :
+- always provide an `alt` attribute on images;
+- use appropriate aspect ratios and avoid distortion;
+- prefer lazy loading for long lists or heavy pages;
+- do not place important information only inside an image;
+- keep images consistent in style and treatment across the interface;
+- avoid decorative images that add visual noise without purpose.
 
-- état pressé ;
-- toast ;
-- message inline ;
-- animation courte ;
-- changement d’état ;
-- loading ;
-- confirmation visuelle.
+An image that does not add meaning should be removed or replaced with a CSS background.
 
-Règles :
+## Visual States
 
-- le feedback doit être immédiat ;
-- une action bloquante doit afficher un état de chargement ;
-- une erreur doit expliquer quoi faire ;
-  -un succès ne doit pas interrompre inutilement l’utilisateur.
+Every important state must be visible.
+
+States to handle depending on the component:
+
+- normal;
+- active;
+- selected;
+- disabled;
+- locked;
+- available;
+- loading;
+- success;
+- error;
+- focus;
+- pressed.
+
+Rules:
+
+- do not rely solely on color;
+- also use a border, an icon, text, a change in relief, or opacity;
+- errors must have explicit text;
+- disabled states must remain readable;
+- keyboard focus must be visible.
+
+## User Feedback
+
+Every important action must provide feedback.
+
+Possible feedback:
+
+- pressed state;
+- toast;
+- inline message;
+- short animation;
+- state change;
+- loading indicator;
+- visual confirmation.
+
+Rules:
+
+- feedback must be immediate;
+- a blocking action must display a loading state;
+- an error must explain what to do;
+- a success must not unnecessarily interrupt the user.
 
 ## Animations
 
-Les animations doivent être rares, courtes et utiles.
+Animations must be rare, short, and purposeful.
 
-Utiliser une animation pour :
+Use an animation to:
 
-- confirmer une action ;
-- signaler un changement d’état ;
-- attirer l’attention sur une information importante ;
-- améliorer la compréhension d’une transition.
+- confirm an action;
+- signal a state change;
+- draw attention to important information;
+- improve understanding of a transition.
 
-Éviter :
+Avoid:
 
-- animations permanentes inutiles ;
-- mouvements rapides ;
-- effets flashy ;
-- animations qui gênent la lecture ;
-- animations coûteuses dans les listes.
+- unnecessary permanent animations;
+- fast movements;
+- flashy effects;
+- animations that interfere with reading;
+- costly animations in lists.
 
-Les animations complexes doivent être dans le SCSS, pas dans le HTML.
+Complex animations must be placed in SCSS, not in the HTML.
 
-## Ombres et effets visuels
+## Shadows and Visual Effects
 
-Les ombres servent à clarifier la profondeur et la séparation.
+Shadows are used to clarify depth and separation.
 
-Règles :
+Rules:
 
-- utiliser les shadows avec modération ;
-- éviter les ombres lourdes sur les éléments répétés ;
-- placer les shadows complexes dans le SCSS ;
-- garder les effets cohérents entre composants ;
-- ne pas utiliser d’effet visuel s’il réduit la lisibilité.
+- use shadows sparingly;
+- avoid heavy shadows on repeated elements;
+- place complex shadows in SCSS;
+- keep effects consistent across components;
+- do not use a visual effect if it reduces readability.
 
-Les effets doivent soutenir l’interface, pas la dominer.
+Effects must support the interface, not dominate it.
 
-## L’interface doit rester utilisable par tous.
+## Accessibility
 
-Règles :
+The interface must remain usable by everyone.
 
-- les contrastes doivent être suffisants ;
-- les boutons icon-only doivent avoir un aria-label ;
-- le focus doit être visible ;
-- les textes importants ne doivent pas être uniquement dans une image ;
-- les états ne doivent pas dépendre uniquement de la couleur ;
-- les éléments HTML natifs sont à privilégier quand ils existent ;
-- les composants doivent viser une compatibilité AXE / WCAG AA.
+Rules:
 
-L’accessibilité n’est pas une étape finale, elle fait partie du design.
+- contrast must be sufficient;
+- icon-only buttons must have an `aria-label`;
+- focus must be visible;
+- important text must not appear only in an image;
+- states must not rely solely on color;
+- native HTML elements are preferred when they exist;
+- components must target AXE / WCAG AA compatibility.
 
-## Responsive
+Accessibility is not a final step — it is part of the design.
 
-Concevoir d’abord pour mobile portrait.
+## UI Validation Checklist
 
-Règles :
+Before validating a component:
 
-- boutons larges ;
-- textes lisibles ;
-- zones tactiles confortables ;
-- contenu scrollable naturellement ;
-- actions principales accessibles ;
-- pas de layout desktop compressé sur mobile.
+- The primary action is obvious.
+- Text is readable on mobile.
+- Visual states are present.
+- Buttons are large enough for touch.
+- Icons are understandable at small sizes.
+- Colors use the project's tokens.
+- The component remains accessible.
+- Decoration does not interfere with reading.
+- The component respects the project's artistic direction.
 
-Les breakpoints doivent améliorer l’expérience sur grand écran, pas compenser une mauvaise base mobile.
+## Final Rule
 
-## Checklist avant validation UI
+Design must remain clear, consistent, and usable.
 
-Avant de valider un composant :
+The priority is always:
 
-- L’action principale est évidente.
-- Le texte est lisible sur mobile.
-- Les états visuels sont présents.
-- Les boutons sont assez grands pour le tactile.
-- Les icônes sont compréhensibles en petite taille.
-- Les couleurs utilisent les tokens du projet.
-- Le composant reste accessible.
-- La décoration ne gêne pas la lecture.
-- Le composant respecte la direction artistique du projet.
+- understand;
+- read;
+- tap;
+- act.
 
-## Règle finale
-
-Le design doit rester clair, cohérent et utilisable.
-
-La priorité reste toujours :
-
-- comprendre ;
-- lire ;
-- toucher ;
-- agir.
-
-La direction artistique doit renforcer l’expérience, jamais la rendre plus difficile.
+Artistic direction must strengthen the experience, never make it harder.

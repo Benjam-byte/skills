@@ -1,137 +1,107 @@
 # Security Rules
 
-Ce document définit les règles de sécurité côté front-end.
+This document defines front-end security rules.
 
-Le front-end n’est jamais une zone de confiance.
+The front-end is never a trusted zone.
 
 ## Environment
 
-Utiliser des environnements séparés :
+Use separate environments: `development`, `staging`, `production`.
 
-- development
-- staging
-- production
+Environment files may contain:
 
-Les fichiers d’environnement peuvent contenir :
+- public API URL;
+- environment name;
+- public feature flags;
+- public configuration.
 
-- URL publique d’API
-- nom d’environnement
-- feature flags publics
-- configuration publique
+They must never contain:
 
-Ils ne doivent jamais contenir :
+- API secrets;
+- private keys;
+- JWT secrets;
+- admin tokens;
+- passwords;
+- database connection strings;
+- service role keys;
+- server credentials.
 
-- secret API
-- clé privée
-- JWT secret
-- token admin
-- mot de passe
-- connection string de base de données
-- clé service role
-- credentials serveur
+Secrets must stay on the backend or in a secured server configuration.
 
-Les secrets doivent rester côté backend ou dans une configuration sécurisée serveur.
+## Front-End Is Public
 
-## Front-end is public
+Everything in the front-end can be read by the user. Never treat as secret:
 
-Tout ce qui est dans le front peut être lu par l’utilisateur.
+- compiled JavaScript;
+- front-end environment variables;
+- API calls visible in the browser;
+- assets, routes, or feature flags.
 
-Ne jamais considérer comme secret :
+If information must not be public, it must not be in the front-end.
 
-- le code JavaScript compilé ;
-- les variables d’environnement front ;
-- les appels API visibles dans le navigateur ;
-- les assets ;
-- les routes ;
-- les feature flags front.
+## API Security
 
-Si une information ne doit pas être publique, elle ne doit pas être dans le front.
+All important security rules must be verified on the backend.
 
-## API security
+The front-end may improve UX with guards or display conditions, but it does not actually protect data. The backend must always verify: authentication, permissions, resource ownership, business limits, and access rights.
 
-Toutes les règles de sécurité importantes doivent être vérifiées côté backend.
-
-Le front peut améliorer l’UX avec des guards ou des conditions d’affichage, mais il ne protège pas réellement les données.
-
-À ne pas faire :
+Never use a front-end guard as the only protection:
 
 ```ts
+// Not sufficient on its own
 if (user.role === "admin") {
   showAdminButton();
 }
 ```
 
-comme unique protection.
+## Authentication
 
-Le backend doit toujours vérifier :
+Do not store sensitive tokens unnecessarily.
 
-- l’authentification ;
-- les permissions ;
-- la propriété des ressources ;
-- les limites métier ;
-- les droits d’accès.
-- Authentication
+Prefer:
 
-Ne pas stocker de token sensible inutilement.
+- secure server-side sessions when possible;
+- `HttpOnly`, `Secure`, `SameSite` cookies when the architecture allows;
+- short-lived, controlled storage if a front-end token is required.
 
-Préférer :
+Avoid:
 
-- session sécurisée côté backend si possible ;
-- cookies HttpOnly, Secure, SameSite si l’architecture le permet ;
-- stockage court et contrôlé si un token front est nécessaire.
+- long-lived tokens in `localStorage`;
+- refresh tokens exposed to JavaScript;
+- admin tokens on the front-end.
 
-Éviter :
+## Local Storage
 
-- token longue durée dans localStorage ;
-- refresh token exposé au JavaScript ;
-- token admin côté front.
+`localStorage` must only contain non-sensitive data.
 
-## Local storage
+Accepted: UI preferences, theme, non-critical local state, public cache, non-sensitive progress.
 
-Le localStorage ne doit contenir que des données non sensibles.
+Avoid: sensitive tokens, critical personal data, payment data, user permissions, secrets.
 
-Accepté :
+## User Input
 
-- préférences UI ;
-- thème ;
-- état local non critique ;
-- cache public ;
-- progression non sensible.
+Any data coming from the user must be treated as untrusted.
 
-À éviter :
+- Validate on the front-end for UX.
+- Always validate again on the backend.
+- Escape or avoid dynamic HTML.
+- Never inject user content directly into the DOM.
 
-- token sensible ;
-- données personnelles critiques ;
-- données de paiement ;
-- permissions utilisateur ;
-- secrets.
+Avoid:
 
-## User input
-
-Toute donnée venant de l’utilisateur doit être considérée comme non fiable.
-
-À faire :
-
-- valider côté front pour l’UX ;
-- valider aussi côté backend ;
-- échapper ou éviter le HTML dynamique ;
-- ne pas injecter directement du contenu utilisateur dans le DOM.
-
-Éviter :
-
-```html
+```ts
 element.innerHTML = userContent;
 ```
 
-Préférer l’affichage Angular standard :
+Prefer standard Angular binding:
 
 ```html
 <p>{{ userContent }}</p>
 ```
 
-## External links
+## External Links
 
-Les liens externes ouverts dans un nouvel onglet doivent utiliser :
+External links opened in a new tab must use:
 
 ```html
 <a href="https://example.com" target="_blank" rel="noopener noreferrer">
@@ -141,39 +111,43 @@ Les liens externes ouverts dans un nouvel onglet doivent utiliser :
 
 ## Dependencies
 
-Ajouter une dépendance seulement si elle est nécessaire.
+Add a dependency only if it is necessary.
 
-Avant d’ajouter une librairie :
+Before adding a library:
 
-- vérifier qu’elle est maintenue ;
-- vérifier son usage réel ;
-- éviter les packages inconnus pour une petite fonction ;
-- garder les dépendances à jour.
+- verify it is actively maintained;
+- verify its actual usage in the project;
+- avoid unknown packages for simple logic;
+- keep dependencies up to date.
 
-Ne pas ajouter une librairie lourde pour une logique simple.
+Do not add a heavy library for simple logic.
 
-## Error messages
+## Error Messages
 
-Les erreurs affichées à l’utilisateur doivent être compréhensibles mais ne doivent pas exposer de détails sensibles.
+Errors shown to the user must be understandable but must not expose sensitive details.
 
-À éviter :
+Avoid:
 
+```
 Database connection failed with user admin on host...
+```
 
-À préférer :
+Prefer:
 
-Une erreur est survenue. Réessaie dans quelques instants.
+```
+An error occurred. Please try again in a moment.
+```
 
 ## Checklist
 
-Avant de valider une feature front :
+Before validating a front-end feature:
 
-- Aucun secret n’est dans le front.
-- Les permissions sont vérifiées côté backend.
-- Le front ne fait pas confiance à ses propres guards.
-- Les tokens ne sont pas loggés.
-- Les données sensibles ne sont pas dans localStorage.
-- Les entrées utilisateur ne sont pas injectées en HTML brut.
-- Les liens externes utilisent rel="noopener noreferrer".
-- Les permissions Capacitor sont limitées.
-- Les erreurs utilisateur ne révèlent pas de détails techniques sensibles.
+- No secrets are in the front-end.
+- Permissions are verified on the backend.
+- The front-end does not trust its own guards.
+- Tokens are not logged.
+- Sensitive data is not in `localStorage`.
+- User input is not injected as raw HTML.
+- External links use `rel="noopener noreferrer"`.
+- Capacitor permissions are limited to what is needed.
+- User-facing errors do not reveal sensitive technical details.

@@ -1,84 +1,73 @@
 # Performance Rules
 
-Ce document définit uniquement les règles performance essentielles du projet.
+This document defines the essential performance rules for the project.
 
-## Principe principal
+## Core Principle
 
-Ne pas optimiser trop tôt, mais éviter les problèmes évidents.
+Do not optimize too early, but avoid obvious problems.
 
-Une page doit rester :
+A page must remain:
 
-- rapide à charger ;
-- fluide au scroll ;
-- légère en DOM ;
-- raisonnable en images ;
-- simple à mettre à jour.
+- fast to load;
+- smooth to scroll;
+- light in DOM;
+- reasonable in image weight;
+- simple to update.
 
 ## Pages
 
-Toutes les pages routées doivent être lazy-loaded.
-
-À préférer :
+All routed pages must be lazy-loaded.
 
 ```ts
 export const routes: Routes = [
   {
-    path: "home",
+    path: 'home',
     loadComponent: () =>
-      import("./pages/home/home.page").then((m) => m.HomePage),
+      import('./pages/home/home.page').then((m) => m.HomePage),
   },
 ];
 ```
 
-Ne pas importer toutes les pages dans le routing principal.
+Do not import all pages in the main routing file.
 
-## Composants lourds
+## Heavy Components
 
-Ne pas charger un composant lourd s’il n’est pas visible ou utile immédiatement.
+Do not load a heavy component if it is not immediately visible or useful.
 
-Utiliser @defer pour :
+Use `@defer` for:
 
-- section secondaire ;
-- graphique ;
-- panneau de détail ;
-- composant sous la ligne de flottaison ;
-- composant utilisant une librairie lourde.
+- secondary sections;
+- charts;
+- detail panels;
+- components below the fold;
+- components using a heavy library.
 
 ```html
 @defer (on viewport) {
-<app-heavy-section />
+  <app-heavy-section />
 } @placeholder {
-<app-section-skeleton />
+  <app-section-skeleton />
 }
 ```
 
-Ne pas utiliser @defer partout.
+Do not use `@defer` everywhere.
 
 ## Templates
 
-Les templates doivent rester légers.
+Templates must remain lightweight.
 
-À faire :
-
-- utiliser @for avec track ;
-- utiliser computed() pour les valeurs dérivées ;
-- utiliser @if pour ne pas rendre ce qui est inutile ;
-- garder les composants en OnPush.
-
-À éviter :
+Avoid calling functions in templates:
 
 ```html
+<!-- Avoid -->
 <p>{{ calculateTotal(itemList()) }}</p>
 ```
 
-À préférer :
+Prefer computed signals:
 
 ```ts
 protected readonly total = computed(() => {
-  return this.itemList().reduce(
-    (total, item) => total + item.value,
-    0,
-  );
+  return this.itemList().reduce((total, item) => total + item.value, 0);
 });
 ```
 
@@ -86,43 +75,35 @@ protected readonly total = computed(() => {
 <p>{{ total() }}</p>
 ```
 
-## Listes
+Always use `@for` with `track`. Keep components on `OnPush`. Use `@if` to avoid rendering what is not needed.
 
-Une liste longue ne doit pas tout rendre d’un coup.
+## Lists
 
-Selon le besoin, utiliser :
+A long list must not render everything at once.
 
-- pagination ;
-- chargement progressif ;
-- ion-infinite-scroll ;
-- Angular CDK virtual scroll pour les très grandes listes.
+Use pagination, progressive loading, `ion-infinite-scroll`, or Angular CDK virtual scroll for very large lists.
 
-Toujours utiliser track :
+Always use `track`:
 
 ```html
 @for (item of itemList(); track item.id) {
-<app-item-card [item]="item" />
+  <app-item-card [item]="item" />
 }
 ```
 
-Éviter track $index si la liste peut changer d’ordre.
+Avoid `track $index` if the list can change order.
 
-Une UI répétée doit rester plus simple qu’une UI isolée.
-
-Une carte de détail peut être riche.
-Un item répété 100 fois doit rester léger.
+A repeated UI element must be simpler than a standalone one. A detail card can be rich. An item repeated 100 times must stay light.
 
 ## Images
 
-Les images doivent être optimisées avant intégration.
+Images must be optimized before integration.
 
-Règles :
-
-- préférer WebP ou AVIF quand possible ;
-- définir width et height quand possible ;
-- lazy loader les images secondaires ;
-- éviter les images énormes dans les listes ;
-- utiliser NgOptimizedImage pour les images statiques importantes.
+- Prefer WebP or AVIF when possible.
+- Define `width` and `height` when possible.
+- Lazy load secondary images.
+- Avoid large images in lists.
+- Use `NgOptimizedImage` for important static images.
 
 ```html
 <img
@@ -133,19 +114,31 @@ Règles :
 />
 ```
 
+## Bundle Size
+
+Do not import an entire library for a single function.
+
+Avoid:
+
+```ts
+import { debounce } from 'lodash';
+```
+
+Prefer:
+
+```ts
+import debounce from 'lodash/debounce';
+```
+
+Before adding a library, verify it is necessary and check its impact on bundle size.
+
 ## Ion Content
 
-ion-content doit rester fluide.
+`ion-content` must remain smooth.
 
-Éviter :
+Avoid heavy components directly inside `ion-content`, nested scrolls, heavy shadows on many items, permanent animations in lists, and heavy modals mounted permanently.
 
-- trop de composants lourds directement dans ion-content ;
-- plusieurs scrolls imbriqués ;
-- de grosses shadows sur beaucoup d’items ;
-- des animations permanentes dans une liste ;
-- des modales lourdes montées en permanence.
-
-À préférer :
+Prefer:
 
 ```html
 <ion-content>
@@ -154,72 +147,51 @@ ion-content doit rester fluide.
     <app-main-section />
 
     @defer (on viewport) {
-    <app-secondary-section />
+      <app-secondary-section />
     }
   </main>
 </ion-content>
 ```
 
-## Animations et styles coûteux
+## Animations
 
-Préférer animer :
+Prefer animating `transform` and `opacity`.
 
-- transform;
-- opacity.
+Avoid animating frequently: `width`, `height`, `top`, `left`, `box-shadow`, `filter`, `backdrop-filter`.
 
-Éviter d’animer souvent :
+Heavy visual effects must be rare, especially in lists.
 
-- width;
-- height;
-- top;
-- left;
-- box-shadow;
-- filter;
-- backdrop-filter.
+## Data
 
-Les effets visuels lourds doivent être rares, surtout dans les listes.
+Do not load more data than necessary.
 
-## Données
+Prefer pagination, server-side filters, limited payloads, simple caching when useful, and on-demand loading.
 
-Ne pas charger plus de données que nécessaire.
+Avoid loading the entire dataset at startup, keeping multiple unnecessary copies of the same data, or recalculating a full list for a small change.
 
-Préférer :
+## Cleanup
 
-- pagination ;
-- filtres côté API ;
-- payloads limités ;
-- cache simple si utile ;
-- chargement à la demande.
+Clean up properly:
 
-Éviter :
+- manual subscriptions;
+- timers;
+- DOM listeners;
+- Capacitor listeners;
+- observers;
+- JS animations.
 
-- charger toute la base au démarrage ;
-- garder plusieurs copies inutiles des mêmes données ;
-- recalculer toute une liste pour une petite modification.
-
-## Nettoyage
-
-Nettoyer correctement :
-
-- subscriptions manuelles ;
-- timers ;
-- listeners DOM ;
-- listeners Capacitor ;
-- observers ;
-- animations JS.
-
-Utiliser takeUntilDestroyed() quand une subscription manuelle est nécessaire.
+Use `takeUntilDestroyed()` when a manual subscription is necessary.
 
 ## Checklist
 
-Avant de valider une page :
+Before validating a page:
 
-- La page est lazy-loaded.
-- Les composants lourds sont différés si possible.
-- Le template ne contient pas de calcul coûteux.
-- Les listes utilisent @for avec track.
-- Les longues listes sont paginées ou chargées progressivement.
-- Les images sont optimisées et dimensionnées.
-- Le scroll dans ion-content reste fluide.
-- Les animations sont simples.
-- Les listeners et subscriptions sont nettoyés.
+- The page is lazy-loaded.
+- Heavy components are deferred when possible.
+- The template contains no costly calculations.
+- Lists use `@for` with `track`.
+- Long lists are paginated or progressively loaded.
+- Images are optimized and sized.
+- Scroll inside `ion-content` remains smooth.
+- Animations are simple.
+- Listeners and subscriptions are cleaned up.

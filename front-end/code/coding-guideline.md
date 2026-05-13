@@ -1,34 +1,39 @@
 # Coding Guidelines
 
-Ce document définit les règles générales d’écriture du code.
+This document defines the general rules for writing code.
 
-Le but est de garder le code lisible, explicite et simple à maintenir.
+The goal is to keep code readable, explicit, and simple to maintain.
 
-## Principe principal
+## Core Principles
 
-Le code doit être facile à comprendre sans effort.
-
-Préférer :
-
-- des noms explicites ;
-- des fonctions courtes ;
-- des responsabilités claires ;
-- une logique simple ;
-- peu de commentaires, mais utiles.
-
-Éviter :
-
-- les abréviations ;
-- les noms trop courts ;
-- les fonctions qui font trop de choses ;
-- les commentaires qui répètent le code ;
-- les abstractions prématurées.
+1. Don't assume. Don't hide confusion. Surface tradeoffs.
+2. Minimum code that solves the problem. Nothing speculative.
+3. Touch only what you must. Clean up only your own mess.
+4. Define success criteria. Loop until verified.
 
 ## Naming
 
-Toujours préférer un mot complet à une lettre.
+Code must be easy to understand without effort.
 
-À éviter :
+Prefer:
+
+- explicit names;
+- short functions;
+- clear responsibilities;
+- simple logic;
+- few comments, but useful ones.
+
+Avoid:
+
+- abbreviations;
+- names that are too short;
+- functions that do too many things;
+- comments that repeat the code;
+- premature abstractions.
+
+Always prefer a full word over a single letter.
+
+Avoid:
 
 ```ts
 for (const i of words) {
@@ -36,7 +41,7 @@ for (const i of words) {
 }
 ```
 
-À préférer :
+Prefer:
 
 ```ts
 for (const index of wordList) {
@@ -46,115 +51,89 @@ for (const index of wordList) {
 
 ## Variables
 
-Les variables doivent expliquer ce qu’elles contiennent.
+Variables must explain what they contain.
 
-À éviter :
+Avoid:
 
+```ts
 const data = getUser();
 const result = calculateScore();
 const temp = value + 1;
+```
 
-À préférer :
+Prefer:
 
+```ts
 const user = getUser();
 const finalScore = calculateScore();
 const nextLevel = currentLevel + 1;
+```
 
-Éviter les noms génériques sauf si le contexte est évident.
+Avoid generic names unless the context makes them obvious.
 
-Noms à éviter si possible :
+Names to avoid when possible: `data`, `result`, `value`, `temp`, `obj`, `arr`, `el`, `e`, `x`, `y`, `i`, `j`.
 
-data
-result
-value
-temp
-obj
-arr
-el
-e
-x
-y
-i
-j
+Exceptions: `event`, `error`, `index`.
 
-Exceptions acceptées :
+### Arrays
 
-event
-error
-index
-Arrays
+An array must be named with the `List` suffix.
 
-### Un tableau doit être nommé avec le suffixe List.
+Prefer:
 
-À préférer :
-
+```ts
 const userList: User[] = [];
 const selectedItemList: Item[] = [];
 const visibleCardList: Card[] = [];
+```
 
-Éviter :
+Avoid:
 
+```ts
 const users: User[] = [];
 const selectedItems: Item[] = [];
 const cards: Card[] = [];
+```
 
-Pour un seul élément, utiliser le nom singulier.
+For a single item, use the singular name:
 
+```ts
 const user: User = userList[0];
 const selectedItem: Item = selectedItemList[0];
+```
 
 ## Booleans
 
-Les booléens doivent commencer par un préfixe clair. Limite l'usage des ternaires.
+Booleans must start with a clear prefix. This also limits ternary usage.
 
-Préfixes recommandés :
+Recommended prefixes: `is`, `has`, `can`, `should`, `was`, `will`.
 
-is
-has
-can
-should
-was
-will
+Prefer:
 
-À préférer :
-
+```ts
 const isOpen = signal(false);
 const hasError = computed(() => errorMessage() !== null);
 const canSubmit = computed(() => form.valid);
 const shouldShowModal = signal(false);
+```
 
-À éviter :
+Avoid:
 
+```ts
 const open = signal(false);
 const error = signal(false);
 const submit = computed(() => form.valid);
-Functions
+```
 
-## Une fonction doit faire une seule chose.
+## Functions
 
-Le nom doit commencer par un verbe.
+A function must do one thing.
 
-Préfixes recommandés :
+The name must start with a verb.
 
-- get
-- set
-- create
-- update
-- delete
-- remove
-- find
-- filter
-- sort
-- build
-- format
-- calculate
-- validate
-- toggle
-- open
-- close
-- handle
+Common prefixes: `get`, `set`, `create`, `update`, `delete`, `remove`, `find`, `filter`, `sort`, `build`, `format`, `calculate`, `validate`, `toggle`, `open`, `close`, `handle`.
 
-  À préférer :
+Prefer:
 
 ```ts
 function calculateTotalPrice(itemList: Item[]): number {
@@ -162,7 +141,7 @@ function calculateTotalPrice(itemList: Item[]): number {
 }
 ```
 
-À éviter :
+Avoid:
 
 ```ts
 function total(items: Item[]): number {
@@ -170,66 +149,64 @@ function total(items: Item[]): number {
 }
 ```
 
-## Event handlers
+## Event Handlers
 
-Les méthodes appelées directement par le template doivent être préfixées avec on.
+Methods called directly from the template must be prefixed with `on`.
 
 ```ts
 protected onSubmit(): void {
-this.submitForm();
+  this.submitForm();
 }
 
 protected onModalClose(): void {
-this.isModalOpen.set(false);
+  this.isModalOpen.set(false);
 }
 
 protected onItemSelect(itemId: string): void {
-this.selectedItemId.set(itemId);
+  this.selectedItemId.set(itemId);
 }
 ```
 
-Éviter de mettre trop de logique dans un handler.
+Avoid putting too much logic in a handler. The handler can call a more specific private method.
 
-Le handler peut appeler une méthode privée plus précise.
+## Private Methods
 
-## Private methods
-
-Les méthodes privées doivent rester simples et explicites. Toutes methodes qui n'est pas utiliser en dehors du composant doit etre déclare private. Les methodes privates sont déclarer à la fin du fichier apres les publics.
+Private methods must remain simple and explicit. Any method not used outside the component must be declared `private`. Private methods are declared at the end of the file, after public ones.
 
 ```ts
 private buildUserPayload(): UserPayload {
-return {
-name: this.name(),
-email: this.email(),
-};
+  return {
+    name: this.name(),
+    email: this.email(),
+  };
 }
 ```
 
-Éviter les méthodes privées trop génériques :
+Avoid overly generic private methods:
 
+```ts
 private processData(): void {}
 private handleStuff(): void {}
-Angular signals
+```
 
 ## Types
 
-Éviter any.
+Avoid `any`.
 
-Utiliser unknown si le type est vraiment incertain.
+Use `unknown` if the type is truly uncertain.
 
-À préférer :
+Prefer:
 
 ```ts
 function parseApiResponse(response: unknown): User | null {
   if (!isUser(response)) {
     return null;
   }
-
   return response;
 }
 ```
 
-À éviter :
+Avoid:
 
 ```ts
 function parseApiResponse(response: any): User {
@@ -239,9 +216,9 @@ function parseApiResponse(response: any): User {
 
 ## Conditions
 
-Préférer les conditions lisibles.
+Prefer readable conditions.
 
-À éviter :
+Avoid:
 
 ```ts
 if (!user || !user.isActive || user.score < 10 || user.status !== "ready") {
@@ -249,7 +226,7 @@ if (!user || !user.isActive || user.score < 10 || user.status !== "ready") {
 }
 ```
 
-À préférer :
+Prefer:
 
 ```ts
 const canStartGame =
@@ -260,11 +237,11 @@ if (!canStartGame) {
 }
 ```
 
-## Early returns
+## Early Returns
 
-Utiliser les early returns pour éviter les gros blocs imbriqués.
+Use early returns to avoid deeply nested blocks.
 
-À éviter :
+Avoid:
 
 ```ts
 function submit(): void {
@@ -276,7 +253,7 @@ function submit(): void {
 }
 ```
 
-À préférer :
+Prefer:
 
 ```ts
 function submit(): void {
@@ -292,117 +269,71 @@ function submit(): void {
 }
 ```
 
-## Loops
-
-Toujours préférer des noms explicites dans les boucles.
-
-À éviter :
-
-```ts
-for (const i of items) {
-  console.log(i.name);
-}
-```
-
-À préférer :
-
-```ts
-for (const item of itemList) {
-  console.log(item.name);
-}
-```
-
-Pour les index :
-
-```ts
-for (const [index, item] of itemList.entries()) {
-  console.log(index, item.name);
-}
-```
-
-Éviter :
-
-```ts
-for (let i = 0; i < itemList.length; i++) {
-  console.log(i);
-}
-```
-
 ## Comments
 
-Ne pas commenter chaque règle. Jamais de TODO,FIXME ou autre commentaire pour le "futur".
+Do not comment every line. Never use `TODO`, `FIXME`, or other "future" comments.
 
-Un commentaire doit expliquer pourquoi le code existe, pas ce que le code fait.
+A comment must explain *why* the code exists, not *what* it does.
 
-Ajouter un commentaire uniquement pour expliquer :
+Add a comment only to explain:
 
-- un hack ;
-- une contrainte Ionic ;
-- une contrainte navigateur ;
-- une valeur non évidente ;
-- un choix UI important ;
-- une règle métier complexe ;
-- une limitation technique ;
-- un contournement temporaire.
+- a hack;
+- an Ionic constraint;
+- a browser constraint;
+- a non-obvious value;
+- an important UI decision;
+- a complex business rule;
+- a technical limitation;
+- a temporary workaround.
 
-À éviter :
+Avoid:
 
 ```ts
 // Set loading to true
 this.isLoading.set(true);
 ```
 
-À préférer :
+Prefer:
 
 ```ts
 // Required because ion-content creates its own scroll container.
 this.maxModalHeight.set("70dvh");
 ```
 
-## Comment format
-
-Les commentaires doivent être courts et utiles.
-
-À préférer :
+Keep comments short and useful:
 
 ```ts
 // Required because Safari does not support this behavior consistently.
 ```
 
-À éviter :
+## Error Handling
 
-```ts
-// This is here because we had a bug one day and this seems to fix it.
-```
+Errors must be explicit. Only add error handling where it is specified or requested. Do not invent error cases that are not defined by the business. Ask if an error seems obvious but is not specified.
 
-## Error handling
-
-Les erreurs doivent être explicites. Ajouter la gestion des erreurs uniquement si elle précisé/demandé. N'invente pas des gestion de cas d'erreur si elles ne sont pas spécifié par le metier. Demande si une erreur semble trop évidente mais qu'elle n'est pas précisé.
-
-À éviter :
+Avoid:
 
 ```ts
 catch (error) {
-console.log(error);
+  console.log(error);
 }
 ```
 
-À préférer :
+Prefer:
 
 ```ts
 catch (error: unknown) {
-this.errorMessage.set('Unable to save settings.');
-console.error('Settings save failed', error);
+  this.errorMessage.set('Unable to save settings.');
+  console.error('Settings save failed', error);
 }
 ```
 
-Ne pas ignorer une erreur silencieusement.
+Never silently ignore an error.
 
-## Magic values
+## Magic Values
 
-Éviter les valeurs magiques.
+Avoid magic values.
 
-À éviter :
+Avoid:
 
 ```ts
 if (score > 100) {
@@ -410,7 +341,7 @@ if (score > 100) {
 }
 ```
 
-À préférer :
+Prefer:
 
 ```ts
 const goldScoreThreshold = 100;
@@ -420,17 +351,17 @@ if (score > goldScoreThreshold) {
 }
 ```
 
-## Final checklist
+## Final Checklist
 
-Avant de valider du code :
+Before validating code:
 
-- Les noms sont explicites.
-- Les tableaux utilisent le suffixe List.
-- Les variables ne sont pas nommées avec une seule lettre.
-- Les fonctions ont un verbe clair.
-- Les booléens commencent par is, has, can ou should.
-- Les conditions complexes sont extraites dans des variables lisibles.
-- Les fonctions restent courtes.
-- Les commentaires expliquent une vraie raison.
-- Aucune abstraction n’est créée “pour plus tard”.
-- Les erreurs ne sont ajoutés qu'aux endoits metier.
+- Names are explicit.
+- Arrays use the `List` suffix.
+- No single-letter variable names.
+- Functions have a clear verb.
+- Booleans start with `is`, `has`, `can`, or `should`.
+- Complex conditions are extracted into readable variables.
+- Functions remain short.
+- Comments explain a real reason.
+- No abstraction created "for later".
+- Errors are only added at business-relevant points.
