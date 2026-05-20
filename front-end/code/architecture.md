@@ -10,6 +10,7 @@ src/app/
   core/
     services/
     guards/
+    stores/
     models/
     utils/
     directives/
